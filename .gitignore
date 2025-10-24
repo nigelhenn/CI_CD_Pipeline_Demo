@@ -5,6 +5,10 @@
 *.tfstate
 *.tfstate.*
 
+# .tflock files
+*.tflock
+.terraform.lock.hcl
+
 # Crash log files
 crash.log
 crash.*.log
@@ -35,3 +39,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+#Jenkinsfile
+Jenkinsfile
