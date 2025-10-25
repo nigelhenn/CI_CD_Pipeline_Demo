@@ -2,99 +2,101 @@
   remote_user: ec2-user
   become: yes
   tasks:
-    - name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
+    - name: Ensure Apache is installed
+      yum:
+        name: httpd
+        state: present
 
-- name: Upgrade all packages to latest version
-  apt:
-    upgrade: dist
+    - name: Start and enable Apache
+      service:
+        name: httpd
+        state: started
+        enabled: true
 
-- name: Ensure Apache is installed
-  apt:
-    name: apache2
-    state: present
+    - name: Create Azure-themed HTML page for pipeline demo
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>CI/CD Pipeline Demo</title>
+            <style>
+              body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f3f9ff;
+                color: #2b2b2b;
+                margin: 0;
+                padding: 0;
+              }
+              header {
+                background-color: #0078d4;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              }
+              main {
+                padding: 40px;
+                text-align: center;
+              }
+              h1 {
+                color: #0078d4;
+              }
+              .card {
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                padding: 30px;
+                max-width: 600px;
+                margin: 0 auto;
+              }
+            </style>
+          </head>
+          <body>
+            <header>
+              <h1>CI/CD Pipeline Demo</h1>
+            </header>
+            <main>
+              <div class="card">
+                <h2>Nigel Hennigar's Basic Pipeline Demo</h2>
+                <p>Created using <strong>GitHub</strong>, <strong>Terraform</strong>, <strong>Docker</strong>, <strong>Jenkins</strong>, and <strong>Ansible</strong> in <strong>AWS</strong> for <strong>Kneat</strong>.</p>
+                <p><em>Tuesday, 28th October 2025</em></p>
+              </div>
+            </main>
+          </body>
+          </html>
+      notify:
+        - Reload Apache
 
-- name: Create Azure-themed HTML page for pipeline demo
-  copy:
-    dest: /var/www/html/index.html
-    content: |
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CI/CD Pipeline Demo</title>
-        <style>
-          body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f9ff;
-            color: #2b2b2b;
-            margin: 0;
-            padding: 0;
-          }
-          header {
-            background-color: #0078d4;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          }
-          main {
-            padding: 40px;
-            text-align: center;
-          }
-          h1 {
-            color: #0078d4;
-          }
-          .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-          }
-        </style>
-      </head>
-      <body>
-        <header>
-          <h1>CI/CD Pipeline Demo</h1>
-        </header>
-        <main>
-          <div class="card">
-            <h2>Nigel Hennigar's Basic Pipeline Demo</h2>
-            <p>Created using <strong>GitHub</strong>, <strong>Terraform</strong>, <strong>Docker</strong>, <strong>Jenkins</strong>, and <strong>Ansible</strong> in <strong>AWS</strong> for <strong>Kneat</strong>.</p>
-            <p><em>Tuesday, 28th October 2025</em></p>
-          </div>
-        </main>
-      </body>
-      </html>
-  notify:
-    - Reload Apache
+    - name: Get IMDSv2 token
+      uri:
+        url: http://169.254.169.254/latest/api/token
+        method: PUT
+        headers:
+          X-aws-ec2-metadata-token-ttl-seconds: "21600"
+        return_content: true
+      register: imds_token
+      changed_when: false
 
+    - name: Get AWS public IP using token
+      uri:
+        url: http://169.254.169.254/latest/meta-data/public-ipv4
+        method: GET
+        headers:
+          X-aws-ec2-metadata-token: "{{ imds_token.content }}"
+        return_content: true
+      register: aws_ip
+      changed_when: false
 
-- name: Get IMDSv2 token
-  uri:
-    url: http://169.254.169.254/latest/api/token
-    method: PUT
-    headers:
-      X-aws-ec2-metadata-token-ttl-seconds: "21600"
-    return_content: true
-  register: imds_token
-  changed_when: false
+    - name: Display AWS public IP
+      debug:
+        var: aws_ip.content
 
-- name: Get AWS public IP using token
-  uri:
-    url: http://169.254.169.254/latest/meta-data/public-ipv4
-    method: GET
-    headers:
-      X-aws-ec2-metadata-token: "{{ imds_token.content }}"
-    return_content: true
-  register: aws_ip
-  changed_when: false
-
-- name: Display AWS public IP
-  debug:
-    var: aws_ip.content
+  handlers:
+    - name: Reload Apache
+      service:
+        name: httpd
+        state: reloaded
