@@ -61,14 +61,16 @@ pipeline {
       sh 'terraform output -json > tf_output.json'
       script {
         def tfOutput = readJSON file: 'tf_output.json'
-        def ips = tfOutput.web_instance_ips.value
-        writeFile file: 'inventory.ini', text: "[web]\n" + ips.collect { ip ->
+        def ips = tfOutput.web_instance_ips?.value ?: []
+        def inventory = "[web]\n" + ips.collect { ip ->
           "${ip} ansible_user=ec2-user ansible_ssh_private_key_file=${env.TF_KEY}"
         }.join("\n")
+        writeFile file: 'inventory.ini', text: inventory
       }
     }
   }
 }
+
 
     stage('Run Ansible Playbook') {
       steps {
