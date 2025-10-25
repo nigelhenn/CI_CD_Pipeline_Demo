@@ -53,28 +53,50 @@ pipeline {
       }
     }
 
-  
     stage('Generate Ansible Inventory') {
-  steps {
-    withCredentials([
-      file(credentialsId: 'terraform-key', variable: 'TF_KEY')
-    ]) {
-      sh 'terraform output -json > tf_output.json'
-      script {
-        def tfOutput = readJSON file: 'tf_output.json'
-        def ips = tfOutput.web_instance_ips?.value ?: []
-        def inventory = [
-          all: [
-            hosts: ips.collectEntries { ip ->
-              [ (ip): [
-                ansible_user: "ec2-user",
-                ansible_ssh_private_key_file: env.TF_KEY
-              ]]
-            }
-          ]
-        ]
-        writeFile file: 'inventory.yaml', text: groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(inventory))
+      steps {
+        withCredentials([
+          file(credentialsId: 'terraform-key', variable: 'TF_KEY')
+        ]) {
+          sh 'terraform output -json > tf_output.json'
+          script {
+            def tfOutput = readJSON file: 'tf_output.json'
+            def ips = tfOutput.web_instance_ips?.value ?: []
+            def inventory = [
+              all: [
+                hosts: ips.collectEntries { ip ->
+                  [ (ip): [
+                    ansible_user: "ec2-user",
+                    ansible_ssh_private_key_file: env.TF_KEY
+                  ]]
+                }
+              ]
+            ]
+            writeFile file: 'inventory.yaml', text: groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(inventory))
+          }
+        }
       }
+    }
+
+    stage('Run Ansible Playbook') {
+      steps {
+        withCredentials([
+          [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
+          file(credentialsId: 'terraform-key', variable: 'TF_KEY')
+        ]) {
+          sh '''
+            echo "Waiting for EC2 instances to become ready..."
+            sleep 120
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.yaml -u ec2-user --private-key "$TF_KEY" playbook.yaml
+          '''
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
     }
   }
 }
