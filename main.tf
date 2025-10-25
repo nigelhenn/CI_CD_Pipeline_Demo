@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "web" {
-  count           = 5
+  count           = 1
   ami             = "ami-033a3fad07a25c231"
   instance_type   = "t3.micro"
   key_name        = "terraform"
@@ -15,18 +15,8 @@ resource "aws_instance" "web" {
     Name = "web-${count.index + 1}"
   }
 
-  provisioner "remote-exec" {
-    inline = ["echo 'SSH is working'"]
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      host        = self.public_ip
-      # remove private_key, can use SSM or default SSH agent
-    }
-  }
-
+  # Local exec for Ansible playbook
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' -u ec2-user playbook.yaml"
+command = "sleep 180 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' -u ec2-user playbook.yaml"
   }
 }
