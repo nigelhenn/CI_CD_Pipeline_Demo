@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "web" {
-  count           = 3
+  count           = 5
   ami             = "ami-033a3fad07a25c231"
   instance_type   = "t3.micro"
   key_name        = "terraform"
@@ -16,7 +16,5 @@ resource "aws_instance" "web" {
   }
 }
 
-output "web_instance_ips" {
-  value = aws_instance.web[*].public_ip
-}
+
 
