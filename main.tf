@@ -1,19 +1,16 @@
 # -------------------------
 # Variables
 # -------------------------
-variable "private_key_path" {
-  description = "Path to the private key file"
-  type        = string
-}
+variable "aws_access_key_id" {}
+variable "aws_secret_access_key" {}
 
 # -------------------------
 # AWS Provider
 # -------------------------
 provider "aws" {
-  region = "us-east-1"
-  # Use environment variables for credentials
-  access_key = var.aws_access_key_id != "" ? var.aws_access_key_id : null
-  secret_key = var.aws_secret_access_key != "" ? var.aws_secret_access_key : null
+  region     = "us-east-1"
+  access_key = var.aws_access_key_id
+  secret_key = var.aws_secret_access_key
 }
 
 # -------------------------
@@ -30,21 +27,27 @@ resource "aws_instance" "web" {
     Name = "web-${count.index + 1}"
   }
 
-  # SSH connection for remote-exec
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file(var.private_key_path)
-    host        = self.public_ip
-  }
-
-  # Run a simple command on the instance
+  # Remote-exec using SSM (no PEM)
   provisioner "remote-exec" {
-    inline = ["echo 'SSH is working'"]
+    inline = ["echo 'SSH via SSM is working'"]
+
+    connection {
+      type        = "ssh"
+      host        = self.id     # SSM targets instance ID
+      bastion_host = "ssm"      # signals Terraform to use SSM
+      bastion_user = "ec2-user"
+    }
   }
 
-  # Run Ansible locally from Jenkins node
+  # Local-exec (Ansible) using AWS CLI to fetch instance IPs
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' -u ec2-user --private-key ${var.private_key_path} playbook.yaml"
+    command = <<EOT
+      for ip in $(aws ec2 describe-instances --instance-ids ${self.id} \
+        --query "Reservations[].Instances[].PrivateIpAddress" --output text); do
+          ANSIBLE_HOST_KEY_CHECKING=False \
+          ansible-playbook -i "$ip," -u ec2-user \
+          playbook.yaml
+      done
+    EOT
   }
 }
