@@ -53,34 +53,32 @@ pipeline {
       }
     }
 
-    stage('Run Ansible Playbook') {
+    stage('Generate Ansible Inventory') {
       steps {
-        withCredentials([
-          [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
-          file(credentialsId: 'terraform-key', variable: 'TF_KEY')
-        ]) {
-          sh '''
-            echo "Waiting for EC2 instances to become ready..."
-            sleep 120
-
-            # Ensure jq is available
-            if ! command -v jq &>/dev/null; then
-              echo "jq not found — installing..."
-              sudo apt-get update && sudo apt-get install -y jq
-            fi
-
-            # Extract instance IPs from Terraform output
-            IPS=$(terraform output -json | jq -r '.web[*].public_ip')
-            echo "Discovered EC2 IPs: $IPS"
-
-            # Run Ansible against each instance
-            for ip in $IPS; do
-              echo "Running Ansible on $ip..."
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i "$ip," -u ec2-user --private-key $TF_KEY playbook.yaml
-            done
-          '''
+        sh 'terraform output -json > tf_output.json'
+        script {
+          def tfOutput = readJSON file: 'tf_output.json'
+          def ips = tfOutput.web_instance_ips.value
+          writeFile file: 'inventory.ini', text: "[web]\n" + ips.collect { ip ->
+            "${ip} ansible_user=ec2-user ansible_ssh_private_key_file=${env.TF_KEY}"
+          }.join("\n")
         }
       }
+    }
+
+    stage('Run Ansible Playbook') {
+  steps {
+    withCredentials([
+      [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
+      file(credentialsId: 'terraform-key', variable: 'TF_KEY')
+    ]) {
+      sh '''
+        echo "Waiting for EC2 instances to become ready..."
+        sleep 120
+
+        # Run Ansible using generated inventory
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+      '''
     }
   }
 }
