@@ -5,6 +5,7 @@ pipeline {
     TF_VERSION = '1.6.0'
     TF_WORKSPACE = 'default'
   }
+  
 
   stages {
     stage('Checkout') {
@@ -85,16 +86,13 @@ pipeline {
       file(credentialsId: 'terraform-key', variable: 'TF_KEY')
     ]) {
       sh '''
-        echo "Waiting for EC2 instances to become ready..."
-        sleep 120
-
-        # Run Ansible using generated inventory and injected SSH key
+        echo "Running Ansible playbook with SSH key..."
         ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.yaml -u ec2-user --private-key "$TF_KEY" playbook.yaml
       '''
     }
   }
 }
- 
+
 
   }
 
