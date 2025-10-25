@@ -51,3 +51,5 @@ Ansible should be run from a control node with SSH access to targets - Ansible i
 Ansible ssh key stored in Jenkins credentials manager
 
 Ansible synamic inventory created in Jenkins stages
+
+.
