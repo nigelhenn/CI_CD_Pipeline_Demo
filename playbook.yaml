@@ -20,63 +20,71 @@
         state: started
         enabled: true
 
-    - name: Create Azure-themed HTML page for pipeline demo
-      copy:
-        dest: /var/www/html/index.html
-        content: |
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>CI/CD Pipeline Demo</title>
-            <style>
-              body {
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f3f9ff;
-                color: #2b2b2b;
-                margin: 0;
-                padding: 0;
-              }
-              header {
-                background-color: #0078d4;
-                color: white;
-                padding: 20px;
-                text-align: center;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-              }
-              main {
-                padding: 40px;
-                text-align: center;
-              }
-              h1 {
-                color: #0078d4;
-              }
-              .card {
-                background-color: white;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                padding: 30px;
-                max-width: 600px;
-                margin: 0 auto;
-              }
-            </style>
-          </head>
-          <body>
-            <header>
-              <h1>CI/CD Pipeline Demo</h1>
-            </header>
-            <main>
-              <div class="card">
-                <h2>Nigel Hennigar's Basic Pipeline Demo</h2>
-                <p>Created using <strong>GitHub</strong>, <strong>Terraform</strong>, <strong>Docker</strong>, <strong>Jenkins</strong>, and <strong>Ansible</strong> in <strong>AWS</strong> for <strong>Kneat</strong>.</p>
-                <p><em>Tuesday, 28th October 2025</em></p>
-              </div>
-            </main>
-          </body>
-          </html>
-      notify:
-        - Reload Apache
+    - name: Create AWS-themed HTML page for pipeline demo
+  copy:
+    dest: /var/www/html/index.html
+    content: |
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CI/CD Pipeline Demo</title>
+        <style>
+          body {
+            font-family: "Amazon Ember", "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff;
+            color: #232f3e;
+            margin: 0;
+            padding: 0;
+          }
+          header {
+            background-color: #232f3e;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          }
+          main {
+            padding: 40px;
+            text-align: center;
+          }
+          h1 {
+            color: #ff9900;
+            margin-bottom: 10px;
+          }
+          .card {
+            background-color: #f3f3f3;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+          }
+          .card h2 {
+            color: #232f3e;
+          }
+          .card p {
+            font-size: 1.1em;
+          }
+        </style>
+      </head>
+      <body>
+        <header>
+          <h1>CI/CD Pipeline Demo</h1>
+        </header>
+        <main>
+          <div class="card">
+            <h2>Nigel Hennigar's Basic Pipeline Demo</h2>
+            <p>Created using <strong>GitHub</strong>, <strong>Terraform</strong>, <strong>Docker</strong>, <strong>Jenkins</strong>, and <strong>Ansible</strong> in <strong>AWS</strong> for <strong>Kneat</strong>.</p>
+            <p><em>Saturday, 25th October 2025</em></p>
+          </div>
+        </main>
+      </body>
+      </html>
+  notify:
+    - Reload Apache
+
 
     - name: Get IMDSv2 token
       uri:
