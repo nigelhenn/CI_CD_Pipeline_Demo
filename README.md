@@ -1,5 +1,5 @@
-🚀 Nigel Hennigar's Basic CI/CD Pipeline Demo
-This project showcases a simple CI/CD pipeline built using modern DevOps tools and deployed in AWS. It was created for Kneat on Tuesday, 28th October 2025.
+**🚀 Nigel Hennigar's Basic CI/CD Pipeline Demo
+This project showcases a simple CI/CD pipeline built using modern DevOps tools and deployed in AWS. It was created for Kneat on Tuesday, 28th October 2025.**
 
 🛠️ Technologies Used
 GitHub – Source code repository and version control
