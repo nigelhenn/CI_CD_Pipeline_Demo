@@ -15,7 +15,7 @@ resource "aws_instance" "web" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("~/keys/terraform.pem")
+      private_key = file(var.private_key_path)
       host        = self.public_ip
     }
   }
@@ -24,3 +24,4 @@ resource "aws_instance" "web" {
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' -u ec2-user --private-key ~/keys/terraform.pem playbook.yaml"
   }
 }
+
