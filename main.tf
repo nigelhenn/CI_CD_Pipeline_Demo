@@ -15,3 +15,7 @@ resource "aws_instance" "web" {
     Name = "web-${count.index + 1}"
   }
 }
+
+output "web_instance_ips" {
+  value = aws_instance.web[*].public_ip
+}
