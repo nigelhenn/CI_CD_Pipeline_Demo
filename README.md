@@ -47,3 +47,5 @@ Jenkins must be set up with required plugins and access to GitHub
 Ansible should be run from a control node with SSH access to targets - Ansible installed
 
 Ansible ssh key stored in Jenkins credentials manager
+
+Ansible synamic inventory created in Jenkins stages
