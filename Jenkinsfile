@@ -7,9 +7,6 @@ pipeline {
     AWS_ACCESS_KEY_ID = credentials('Terraform')
     AWS_SECRET_ACCESS_KEY = credentials('Terraform')
   }
-  
-
-
   stages {
     stage('Checkout') {
       steps {

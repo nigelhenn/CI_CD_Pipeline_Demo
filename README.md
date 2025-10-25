@@ -6,7 +6,7 @@ GitHub – Source code repository and version control
 
 Terraform – Infrastructure as Code for provisioning AWS resources
 
-Docker – Containerization of application components
+Docker – Jenkins instance running on docker
 
 Jenkins – Automation server for building and deploying
 
