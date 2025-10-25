@@ -44,6 +44,8 @@ Ensure AWS credentials are configured before running Terraform
 
 Jenkins must be set up with required plugins and access to GitHub
 
+Jukins job has no spaces in the name
+
 Ansible should be run from a control node with SSH access to targets - Ansible installed
 
 Ansible ssh key stored in Jenkins credentials manager
