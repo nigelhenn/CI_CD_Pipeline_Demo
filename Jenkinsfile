@@ -4,9 +4,8 @@ pipeline {
   environment {
     TF_VERSION = '1.6.0'
     TF_WORKSPACE = 'default'
-    AWS_ACCESS_KEY_ID = credentials('Terraform')
-    AWS_SECRET_ACCESS_KEY = credentials('Terraform')
   }
+
   stages {
     stage('Checkout') {
       steps {
@@ -16,26 +15,34 @@ pipeline {
 
     stage('Terraform Init') {
       steps {
-        sh 'terraform init'
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform']]) {
+          sh 'terraform init'
+        }
       }
     }
 
     stage('Terraform Validate') {
       steps {
-        sh 'terraform validate'
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform']]) {
+          sh 'terraform validate'
+        }
       }
     }
 
     stage('Terraform Plan') {
       steps {
-        sh 'terraform plan -out=tfplan'
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform']]) {
+          sh 'terraform plan -out=tfplan'
+        }
       }
     }
 
     stage('Terraform Apply') {
       steps {
         input message: 'Approve Terraform Apply?'
-        sh 'terraform apply tfplan'
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform']]) {
+          sh 'terraform apply tfplan'
+        }
       }
     }
   }
