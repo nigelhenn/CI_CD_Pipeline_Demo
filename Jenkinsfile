@@ -80,20 +80,19 @@ pipeline {
 
 
     stage('Run Ansible Playbook') {
-      steps {
-        withCredentials([
-          [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
-          file(credentialsId: 'terraform-key', variable: 'TF_KEY')
-        ]) {
-          sh '''
-            echo "Waiting for EC2 instances to become ready..."
-            sleep 120
+  steps {
+    withCredentials([
+      [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
+      file(credentialsId: 'terraform-key', variable: 'TF_KEY')
+    ]) {
+      sh '''
+        echo "Waiting for EC2 instances to become ready..."
+        sleep 120
 
-            # Run Ansible using generated inventory and injected SSH key
-            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.yaml -u ec2-user --private-key "$TF_KEY" playbook.yaml
-          '''
-        }
-      }
+        # Run Ansible using generated inventory and injected SSH key
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini -u ec2-user --private-key "$TF_KEY" playbook.yaml
+      '''
     }
   }
 }
+
