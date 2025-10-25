@@ -1,9 +1,7 @@
-- hosts: all
+- name: Configure EC2 instance
+  hosts: all
   remote_user: ec2-user
   become: yes
-  tasks:
-    - name: Wait for EC2 instance to be reachable
-  hosts: all
   gather_facts: false
   tasks:
     - name: Wait for SSH to become available

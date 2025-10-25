@@ -5,7 +5,6 @@ pipeline {
     TF_VERSION = '1.6.0'
     TF_WORKSPACE = 'default'
   }
-  
 
   stages {
     stage('Checkout') {
@@ -67,8 +66,7 @@ pipeline {
               all: [
                 hosts: ips.collectEntries { ip ->
                   [ (ip): [
-                    ansible_user: "ec2-user",
-                    ansible_ssh_private_key_file: env.TF_KEY
+                    ansible_user: "ec2-user"
                   ]]
                 }
               ]
@@ -80,20 +78,18 @@ pipeline {
     }
 
     stage('Run Ansible Playbook') {
-  steps {
-    withCredentials([
-      [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
-      file(credentialsId: 'terraform-key', variable: 'TF_KEY')
-    ]) {
-      sh '''
-        echo "Running Ansible playbook with SSH key..."
-        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.yaml -u ec2-user --private-key "$TF_KEY" playbook.yaml
-      '''
+      steps {
+        withCredentials([
+          [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Terraform'],
+          file(credentialsId: 'terraform-key', variable: 'TF_KEY')
+        ]) {
+          sh '''
+            echo "Running Ansible playbook with SSH key..."
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.yaml -u ec2-user --private-key "$TF_KEY" playbook.yaml
+          '''
+        }
+      }
     }
-  }
-}
-
-
   }
 
   post {
