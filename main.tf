@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "web" {
-  count           = 5
+  count           = 10
   ami             = "ami-033a3fad07a25c231"
   instance_type   = "t3.micro"
   key_name        = "terraform"
