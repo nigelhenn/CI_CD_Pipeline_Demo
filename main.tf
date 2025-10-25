@@ -14,9 +14,4 @@ resource "aws_instance" "web" {
   tags = {
     Name = "web-${count.index + 1}"
   }
-
-  # Local exec for Ansible playbook
-  provisioner "local-exec" {
-command = "sleep 180 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' -u ec2-user playbook.yaml"
-  }
 }
