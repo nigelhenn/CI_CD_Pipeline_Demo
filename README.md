@@ -1,4 +1,4 @@
-# 🚀 Nigel Hennigar's Basic CI/CD Pipeline Demo
+# 🚀 Basic CI/CD Pipeline Demo
 
 This project showcases a simple yet complete **CI/CD pipeline** built using modern DevOps tools and deployed on **AWS**.  
 It was created for **Kneat** on **Saturday, 25th October 2025**.
@@ -45,7 +45,7 @@ This pipeline demonstrates a full CI/CD workflow:
 
 The demo web page (served at the root of the deployed web server) includes:
 
-> *Nigel Hennigar's Basic Pipeline demo created using GitHub, Terraform, Docker, Jenkins, and Ansible in AWS for Kneat – Tuesday, 28th October 2025.*
+> *Basic Pipeline demo created using GitHub, Terraform, Docker, Jenkins, and Ansible in AWS for Kneat – Tuesday, 28th October 2025.*
 
 ---
 
@@ -66,6 +66,6 @@ This demo integrates **Infrastructure as Code**, **automation**, and **configura
 
 ---
 
-**Created by:** [Nigel Hennigar](#)  
+**Created by:** [Nigel H](#)  
 **Date:** Saturday, 25th October 2025  
 **For:** Kneat
