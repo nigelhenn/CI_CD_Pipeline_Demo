@@ -1,55 +1,71 @@
-**🚀 Nigel Hennigar's Basic CI/CD Pipeline Demo
-This project showcases a simple CI/CD pipeline built using modern DevOps tools and deployed in AWS. It was created for Kneat on Tuesday, 28th October 2025.**
+# 🚀 Nigel Hennigar's Basic CI/CD Pipeline Demo
 
-🛠️ Technologies Used
-GitHub – Source code repository and version control
+This project showcases a simple yet complete **CI/CD pipeline** built using modern DevOps tools and deployed on **AWS**.  
+It was created for **Kneat** on **Saturday, 25th October 2025**.
 
-Terraform – Infrastructure as Code for provisioning AWS resources
+---
 
-Docker – Jenkins instance running on docker
+## 🛠️ Technologies Used
 
-Jenkins – Automation server for building and deploying
+| Tool | Purpose |
+|------|----------|
+| **GitHub** | Source code management and version control |
+| **Terraform** | Infrastructure as Code (IaC) for provisioning AWS resources |
+| **Docker** | Containerized Jenkins instance |
+| **Jenkins** | Automation server for build, test, and deployment pipelines |
+| **Ansible** | Configuration management and post-provisioning setup |
 
-Ansible – Configuration management and provisioning
+---
 
-📦 What It Does
-Provisions infrastructure in AWS using Terraform
+## 📦 What It Does
 
-Builds and packages application components with Docker
+This pipeline demonstrates a full CI/CD workflow:
 
-Automates deployment and testing via Jenkins pipelines
+- 🚀 **Provision infrastructure** in AWS using Terraform  
+- 🧱 **Build and package** application components with Docker  
+- ⚙️ **Automate deployment and testing** using Jenkins pipelines  
+- 🧩 **Configure servers and services** via Ansible  
+- 🌐 **Serve a styled HTML page** inspired by AWS’s design aesthetic  
 
-Configures web servers and services using Ansible
+---
 
-Serves a styled HTML page with Azure-inspired design
+## 📁 File Overview
 
-📁 File Overview
-main.tf – Terraform configuration for AWS setup
+| File | Description |
+|------|--------------|
+| `main.tf` | Terraform configuration for AWS EC2 instance provisioning |
+| `Dockerfile` | Jenkins container image definition |
+| `Jenkinsfile` | Jenkins pipeline logic for build, plan, apply, and deploy stages |
+| `playbook.yml` | Ansible playbook for configuring EC2 instances |
+| `/var/www/html/index.html` | Static web page served by Apache |
 
-Dockerfile – Container image definition
+---
 
-Jenkinsfile – CI/CD pipeline logic
+## 🌐 Demo Page
 
-playbook.yml – Ansible playbook for provisioning
+The demo web page (served at the root of the deployed web server) includes:
 
-/var/www/html/index.html – Web page served by Apache
+> *Nigel Hennigar's Basic Pipeline demo created using GitHub, Terraform, Docker, Jenkins, and Ansible in AWS for Kneat – Tuesday, 28th October 2025.*
 
-🌐 Demo Page
-The demo page is served at the root of the web server and includes:
+---
 
-Nigel Hennigar's Basic Pipeline demo created using GitHub, Terraform, Docker, Jenkins and Ansible in AWS for Kneat – Tuesday 28th Oct 2025
+## 📌 Important Notes
 
-📌 Notes
-Ensure AWS credentials are configured before running Terraform
+- ✅ **AWS Credentials** must be configured in Jenkins or environment variables before running Terraform  
+- 🧩 **Jenkins** must have required plugins installed and access to the GitHub repository  
+- ⚠️ **Jenkins Job Name** should contain **no spaces**  
+- 🔐 **Ansible** must be installed on the Jenkins control node with SSH access to target instances  
+- 🗝️ **SSH keys** for Ansible are stored in the Jenkins Credentials Manager  
+- 🧮 **Dynamic Ansible Inventory** is generated during Jenkins pipeline stages  
 
-Jenkins must be set up with required plugins and access to GitHub
+---
 
-Jukins job has no spaces in the name
+## 💡 Summary
 
-Ansible should be run from a control node with SSH access to targets - Ansible installed
+This demo integrates **Infrastructure as Code**, **automation**, and **configuration management** into a cohesive CI/CD workflow — showcasing how to go from source code to a deployed and configured environment in AWS using entirely open-source DevOps tooling.
 
-Ansible ssh key stored in Jenkins credentials manager
+---
 
-Ansible synamic inventory created in Jenkins stages
-
-.
+**Created by:** [Nigel Hennigar](#)  
+**Date:** Saturday, 25th October 2025  
+**For:** Kneat
