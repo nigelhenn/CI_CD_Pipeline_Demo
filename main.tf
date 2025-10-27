@@ -1,20 +1,16 @@
 provider "aws" {
-  region = "eu-west-1"
-  # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-  # will be picked up from environment variables set in Jenkins
+  region = var.region
+  # AWS credentials are expected from environment variables
 }
 
 resource "aws_instance" "web" {
-  count           = 10
-  ami             = "ami-033a3fad07a25c231"
-  instance_type   = "t3.micro"
-  key_name        = "terraform"
-  security_groups = ["launch-wizard-1"]
+  count           = var.instance_count
+  ami             = var.ami_id
+  instance_type   = var.instance_type
+  key_name        = var.key_name
+  security_groups = var.security_groups
 
   tags = {
     Name = "web-${count.index + 1}"
   }
 }
-
-
-
