@@ -34,6 +34,7 @@ This pipeline demonstrates a full CI/CD workflow:
 | File | Description |
 |------|--------------|
 | `main.tf` | Terraform configuration for AWS EC2 instance provisioning |
+| `variables.tf`| Input variables for Terraform (region, instance type, etc.)  |
 | `Dockerfile` | Jenkins container image definition |
 | `Jenkinsfile` | Jenkins pipeline logic for build, plan, apply, and deploy stages |
 | `playbook.yml` | Ansible playbook for configuring EC2 instances |
