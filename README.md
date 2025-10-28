@@ -46,7 +46,7 @@ This pipeline demonstrates a full CI/CD workflow:
 
 The demo web page (served at the root of the deployed web server) includes:
 
-> *Basic Pipeline demo created using GitHub, Terraform, Docker, Jenkins, and Ansible in AWS for Kneat – Tuesday, 28th October 2025.*
+> *Demo created using GitHub, Terraform, Docker, Jenkins, and Ansible in AWS for Kneat – Tuesday, 28th October 2025.*
 
 ---
 
@@ -70,3 +70,5 @@ This demo integrates **Infrastructure as Code**, **automation**, and **configura
 **Created by:** [Nigel H](#)  
 **Date:** Saturday, 25th October 2025  
 **For:** Kneat Solutions
+
+---
